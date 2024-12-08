@@ -1,0 +1,172 @@
+
+
+# **ESP8266 Battery Monitoring and Control System**
+
+This project monitors the health, percentage, voltage, and current of a battery and allows relay-based remote control for connection/disconnection using the **Blynk app**. It’s built using an **ESP8266 NodeMCU**, **ACS712 current sensor**, **TP4056 battery charging module**, and a relay module.
+
+---
+
+## **Features**
+
+- **Battery Monitoring**:
+  - **Voltage**: Displays the battery voltage in real-time.
+  - **Current**: Shows the current being drawn by the load.
+  - **Percentage**: Calculates the battery percentage based on the maximum voltage (4.2V = 100%).
+  - **Health**: Indicates battery health as a percentage.
+  - **Connection Status**: Detects if the battery is connected or disconnected.
+
+- **Relay Control**:
+  - Remotely connects/disconnects the battery from the load using the Blynk app.
+
+- **User Interface**:
+  - Real-time monitoring and control via the Blynk mobile app.
+
+---
+
+## **Hardware Requirements**
+
+1. **ESP8266 NodeMCU** (1 unit)  
+2. **TP4056 Battery Charger Module** (1 unit)  
+3. **ACS712 Current Sensor Module** (1 unit)  
+4. **Relay Module (5V)** (1 unit)  
+5. **18650 Battery** (1 unit)  
+6. **Voltage Divider** (100kΩ and 200kΩ resistors)  
+7. Jumper Wires and Breadboard  
+
+---
+
+## **Wiring**
+
+### **Connections**:
+
+1. **TP4056**:
+   - **B+**: Battery Positive  
+   - **B-**: Battery Negative  
+   - **OUT+**: To one side of Relay (COM)  
+   - **OUT-**: To GND  
+
+2. **Relay**:
+   - **COM**: Connect to **OUT+** from TP4056.  
+   - **NO (Normally Open)**: Connect to load positive terminal.  
+   - **IN (Signal)**: Connect to ESP8266 **D8**.  
+
+3. **Voltage Divider**:
+   - **OUT+** from TP4056 to **200kΩ resistor** (top of divider).  
+   - Middle of divider (between **200kΩ** and **100kΩ**) to ESP8266 **A0**.  
+   - Bottom of divider (**100kΩ**) to GND.  
+
+4. **ACS712 Current Sensor**:
+   - **VCC**: ESP8266 3.3V  
+   - **GND**: ESP8266 GND  
+   - **OUT**: ESP8266 **D1**  
+
+---
+
+## **Software Requirements**
+
+- **Arduino IDE**
+- **Blynk Library** (install via Library Manager)
+- **ESP8266 Board Support Package** (install via Arduino IDE Board Manager)
+
+---
+
+## **Installation Steps**
+
+1. **Setup Hardware**:
+   - Connect all components as per the wiring diagram above.
+
+2. **Setup Arduino IDE**:
+   - Install the ESP8266 board package.
+   - Install the Blynk library.
+
+3. **Configure Blynk App**:
+   - Download the Blynk app on your smartphone.
+   - Create a new project and note the **auth token**.
+   - Add widgets for monitoring and controlling:
+     - **Label Widgets**: V1 (Voltage), V2 (Current), V3 (Health), V4 (Connection Status)
+     - **Button Widget**: V5 (Relay Control)
+
+4. **Upload the Code**:
+   - Replace the following placeholders in the code:
+     ```cpp
+     #define BLYNK_AUTH_TOKEN "Your_Blynk_Auth_Token"
+     char ssid[] = "Your_WiFi_SSID";
+     char pass[] = "Your_WiFi_Password";
+     ```
+   - Compile and upload the code to the ESP8266.
+
+5. **Run the Project**:
+   - Power up the system.
+   - Open the Blynk app to monitor and control the battery.
+
+---
+
+## **Code Explanation**
+
+### **Key Functions**:
+1. `readVoltage()`: Reads the battery voltage using the voltage divider and converts it to real voltage.  
+2. `readCurrent()`: Reads the current using the ACS712 sensor and calculates the current in amps.  
+3. `BLYNK_WRITE(V_RELAY)`: Toggles the relay on/off based on input from the Blynk app.
+
+### **Virtual Pin Assignments**:
+- **V1**: Battery Voltage  
+- **V2**: Battery Current  
+- **V3**: Battery Health  
+- **V4**: Connection Status  
+- **V5**: Relay Control  
+
+---
+
+## **Usage**
+
+1. Open the **Blynk app** on your smartphone.
+2. Monitor the following parameters in real-time:
+   - Battery voltage (V1)
+   - Current draw (V2)
+   - Battery health (V3)
+   - Connection status (V4)
+3. Control the relay (connect/disconnect) using the button widget on **V5**.
+
+---
+
+## **Project Diagram**
+
+Add a circuit diagram image here (use any circuit drawing tool like Fritzing).
+
+---
+
+## **Troubleshooting**
+
+1. **Incorrect Readings**:
+   - Ensure the resistor values in the voltage divider are correct (100kΩ and 200kΩ).
+   - Calibrate the ACS712 sensitivity and offset if readings are off.
+
+2. **Relay Not Switching**:
+   - Check the relay connections and ensure it’s powered correctly.
+   - Ensure the relay is connected to the correct GPIO pin.
+
+3. **Wi-Fi Issues**:
+   - Verify the SSID and password in the code.
+   - Ensure the ESP8266 is within range of the Wi-Fi network.
+
+---
+
+## **Future Enhancements**
+
+- Add support for battery temperature monitoring.
+- Integrate overcurrent protection for safety.
+- Implement a low-power mode for the ESP8266.
+
+---
+
+## **License**
+
+This project is open-source and distributed under the MIT License. Feel free to use and modify it as needed.
+
+---
+
+## **Acknowledgments**
+
+- **Blynk**: For the excellent IoT platform.
+- **Arduino**: For the IDE and board support.
+- Community contributors and tutorials for ACS712 and TP4056 integration.
